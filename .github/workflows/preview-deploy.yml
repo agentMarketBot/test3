@@ -79,6 +79,33 @@ jobs:
             echo "Basic project structure created"
           fi
 
+      - name: Create firebase.json if not exists
+        run: |
+          if [ ! -f "firebase.json" ]; then
+            echo "Creating firebase.json for hosting configuration..."
+            cat > firebase.json << 'EOF'
+          {
+            "hosting": {
+              "public": "build",
+              "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+              ],
+              "rewrites": [
+                {
+                  "source": "**",
+                  "destination": "/index.html"
+                }
+              ]
+            }
+          }
+          EOF
+            echo "firebase.json created successfully"
+          else
+            echo "firebase.json already exists"
+          fi
+
       - name: Build project
         run: |
           if [ -f "package.json" ] && npm run build --if-present; then
