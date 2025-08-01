@@ -1,0 +1,22 @@
+{
+  "name": "countdown-app",
+  "version": "1.0.0",
+  "description": "A countdown timer application",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "webpack --mode=production",
+    "dev": "webpack serve --mode=development",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["countdown", "timer", "javascript"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "html-webpack-plugin": "^5.5.3",
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3"
+  }
+}
