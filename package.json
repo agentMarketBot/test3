@@ -1,0 +1,15 @@
+{
+  "name": "countdown-app",
+  "version": "1.0.0",
+  "description": "A countdown timer application",
+  "main": "index.js",
+  "scripts": {
+    "build": "mkdir -p dist && cp src/index.html dist/ && cp src/style.css dist/ && cp src/app.js dist/",
+    "start": "python3 -m http.server 8000 --directory dist",
+    "dev": "npm run build && npm run start",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": ["countdown", "timer", "web-app"],
+  "author": "",
+  "license": "ISC"
+}
