@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Countdown Timer</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="target-date">Select Target Date & Time:</label>
+                <input type="datetime-local" id="target-date">
+            </div>
+            <div class="input-group">
+                <label for="event-name">Event Name (optional):</label>
+                <input type="text" id="event-name" placeholder="Enter event name">
+            </div>
+            <button id="start-countdown">Start Countdown</button>
+        </div>
+
+        <div class="countdown-display" id="countdown-display" style="display: none;">
+            <div class="event-title" id="event-title"></div>
+            <div class="countdown-grid">
+                <div class="time-unit">
+                    <span class="number" id="days">00</span>
+                    <span class="label">Days</span>
+                </div>
+                <div class="time-unit">
+                    <span class="number" id="hours">00</span>
+                    <span class="label">Hours</span>
+                </div>
+                <div class="time-unit">
+                    <span class="number" id="minutes">00</span>
+                    <span class="label">Minutes</span>
+                </div>
+                <div class="time-unit">
+                    <span class="number" id="seconds">00</span>
+                    <span class="label">Seconds</span>
+                </div>
+            </div>
+            <div class="countdown-message" id="countdown-message"></div>
+            <button id="reset-countdown">Reset</button>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
