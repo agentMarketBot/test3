@@ -61,32 +61,35 @@ jobs:
               npm install
             fi
           else
-            echo "No package.json found, creating basic React project structure..."
-            npm init -y
-            npm install react react-dom @types/react @types/react-dom typescript
+            echo "No package.json found, creating React project with Vite..."
+            npm create vite@latest . -- --template react-ts --yes
+            npm install
             
-            # Create basic project structure
-            mkdir -p src public
-            
-            # Create basic package.json scripts
-            npm pkg set scripts.start="serve -s build"
-            npm pkg set scripts.build="tsc && mkdir -p build && cp -r public/* build/ && cp -r src/* build/"
-            npm pkg set scripts.test="echo 'No tests specified'"
-            
-            # Install serve for serving static files
-            npm install --save-dev serve typescript
-            
-            echo "Basic project structure created"
+            echo "React project with Vite created successfully"
           fi
 
       - name: Create firebase.json if not exists
         run: |
           if [ ! -f "firebase.json" ]; then
             echo "Creating firebase.json for hosting configuration..."
-            cat > firebase.json << 'EOF'
+            
+            # Determine the correct build directory
+            BUILD_DIR="build"
+            if [ -f "vite.config.js" ] || [ -f "vite.config.ts" ]; then
+              BUILD_DIR="dist"
+              echo "Detected Vite project, using 'dist' directory"
+            elif [ -f "package.json" ] && grep -q '"build".*"react-scripts"' package.json; then
+              BUILD_DIR="build"
+              echo "Detected Create React App, using 'build' directory"
+            else
+              BUILD_DIR="build"
+              echo "Using default 'build' directory"
+            fi
+            
+            cat > firebase.json << EOF
           {
             "hosting": {
-              "public": "build",
+              "public": "$BUILD_DIR",
               "ignore": [
                 "firebase.json",
                 "**/.*",
@@ -101,27 +104,42 @@ jobs:
             }
           }
           EOF
-            echo "firebase.json created successfully"
+            echo "firebase.json created successfully with public directory: $BUILD_DIR"
           else
             echo "firebase.json already exists"
           fi
 
       - name: Build project
         run: |
+          # Determine the correct build directory
+          BUILD_DIR="build"
+          if [ -f "vite.config.js" ] || [ -f "vite.config.ts" ]; then
+            BUILD_DIR="dist"
+            echo "🏗️ Detected Vite project, build output will be in 'dist' directory"
+          elif [ -f "package.json" ] && grep -q '"build".*"react-scripts"' package.json; then
+            BUILD_DIR="build"
+            echo "🏗️ Detected Create React App, build output will be in 'build' directory"
+          else
+            BUILD_DIR="build"
+            echo "🏗️ Using default 'build' directory"
+          fi
+          
           # Always ensure build directory exists
-          mkdir -p build
+          mkdir -p "$BUILD_DIR"
           
           # Try to run the build script if package.json exists
           if [ -f "package.json" ]; then
-            echo "package.json found, attempting to build..."
-            if npm run build 2>/dev/null; then
+            echo "📦 package.json found, attempting to build..."
+            if npm run build; then
               echo "✅ Build completed successfully"
               # Verify build directory has content
-              if [ "$(ls -A build 2>/dev/null)" ]; then
+              if [ "$(ls -A "$BUILD_DIR" 2>/dev/null)" ]; then
                 echo "✅ Build directory contains files"
+                echo "📁 Build output in $BUILD_DIR:"
+                ls -la "$BUILD_DIR/"
               else
                 echo "⚠️ Build directory is empty, creating fallback content..."
-                cat > build/index.html << 'EOF'
+                cat > "$BUILD_DIR/index.html" << 'EOF'
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -146,8 +164,8 @@ jobs:
           EOF
               fi
             else
-              echo "❌ Build script failed or not found, creating fallback content..."
-              cat > build/index.html << 'EOF'
+              echo "❌ Build script failed, creating fallback content..."
+              cat > "$BUILD_DIR/index.html" << 'EOF'
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -165,15 +183,15 @@ jobs:
               <div class="container">
                   <h1>🚀 Preview Deployment Successful!</h1>
                   <p>Your repository has been successfully deployed to Firebase Hosting.</p>
-                  <p>No build script found. Add your project files to customize this deployment.</p>
+                  <p>Build failed. Check your project configuration and try again.</p>
               </div>
           </body>
           </html>
           EOF
             fi
           else
-            echo "No package.json found, creating basic preview page..."
-            cat > build/index.html << 'EOF'
+            echo "📄 No package.json found, creating basic preview page..."
+            cat > "$BUILD_DIR/index.html" << 'EOF'
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -199,8 +217,8 @@ jobs:
           fi
           
           # Final verification
-          echo "📁 Build directory contents:"
-          ls -la build/
+          echo "📁 Final build directory ($BUILD_DIR) contents:"
+          ls -la "$BUILD_DIR/"
           echo "✅ Build directory ready for deployment"
 
       - name: Deploy to Firebase Hosting Channel
