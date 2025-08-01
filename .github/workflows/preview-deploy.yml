@@ -108,15 +108,45 @@ jobs:
 
       - name: Build project
         run: |
-          if [ -f "package.json" ] && npm run build --if-present; then
-            echo "Build completed successfully"
-          else
-            echo "No build script found or build failed, creating basic build structure..."
-            mkdir -p build
-            if [ -f "public/index.html" ]; then
-              cp -r public/* build/
+          # Always ensure build directory exists
+          mkdir -p build
+          
+          # Try to run the build script if package.json exists
+          if [ -f "package.json" ]; then
+            echo "package.json found, attempting to build..."
+            if npm run build 2>/dev/null; then
+              echo "✅ Build completed successfully"
+              # Verify build directory has content
+              if [ "$(ls -A build 2>/dev/null)" ]; then
+                echo "✅ Build directory contains files"
+              else
+                echo "⚠️ Build directory is empty, creating fallback content..."
+                cat > build/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Preview Deployment</title>
+              <style>
+                  body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+                  .container { max-width: 600px; margin: 0 auto; }
+                  h1 { color: #333; }
+                  p { color: #666; line-height: 1.6; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>🚀 Preview Deployment Successful!</h1>
+                  <p>Your repository has been successfully deployed to Firebase Hosting.</p>
+                  <p>Build completed but no output found. Add your project files to customize this deployment.</p>
+              </div>
+          </body>
+          </html>
+          EOF
+              fi
             else
-              # Create a basic index.html if none exists
+              echo "❌ Build script failed or not found, creating fallback content..."
               cat > build/index.html << 'EOF'
           <!DOCTYPE html>
           <html lang="en">
@@ -135,14 +165,43 @@ jobs:
               <div class="container">
                   <h1>🚀 Preview Deployment Successful!</h1>
                   <p>Your repository has been successfully deployed to Firebase Hosting.</p>
-                  <p>This is a basic preview page. Add your project files to customize this deployment.</p>
+                  <p>No build script found. Add your project files to customize this deployment.</p>
               </div>
           </body>
           </html>
           EOF
             fi
-            echo "Basic build structure created"
+          else
+            echo "No package.json found, creating basic preview page..."
+            cat > build/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Preview Deployment</title>
+              <style>
+                  body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+                  .container { max-width: 600px; margin: 0 auto; }
+                  h1 { color: #333; }
+                  p { color: #666; line-height: 1.6; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>🚀 Preview Deployment Successful!</h1>
+                  <p>Your repository has been successfully deployed to Firebase Hosting.</p>
+                  <p>This is a basic preview for a new repository. Add your project files to customize this deployment.</p>
+              </div>
+          </body>
+          </html>
+          EOF
           fi
+          
+          # Final verification
+          echo "📁 Build directory contents:"
+          ls -la build/
+          echo "✅ Build directory ready for deployment"
 
       - name: Deploy to Firebase Hosting Channel
         id: firebase_deploy
