@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown App</title>
+  <script type="module" crossorigin src="/assets/index-BZBnZUpj.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CCUSBMhk.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Countdown Timer</h1>
+        <div class="input-section">
+            <input type="datetime-local" id="target-date" />
+            <button id="start-btn">Start Countdown</button>
+            <button id="reset-btn">Reset</button>
+        </div>
+        <div class="countdown-display">
+            <div class="time-unit">
+                <span id="days">00</span>
+                <label>Days</label>
+            </div>
+            <div class="time-unit">
+                <span id="hours">00</span>
+                <label>Hours</label>
+            </div>
+            <div class="time-unit">
+                <span id="minutes">00</span>
+                <label>Minutes</label>
+            </div>
+            <div class="time-unit">
+                <span id="seconds">00</span>
+                <label>Seconds</label>
+            </div>
+        </div>
+        <div id="message" class="message"></div>
+    </div>
+</body>
+</html>
