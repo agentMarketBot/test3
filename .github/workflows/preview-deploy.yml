@@ -162,6 +162,7 @@ jobs:
           </body>
           </html>
           EOF
+                fi
               fi
             else
               echo "❌ Build script failed, creating fallback content..."
