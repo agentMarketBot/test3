@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Countdown Timer</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="event-name">Event Name:</label>
+                <input type="text" id="event-name" placeholder="Enter event name">
+            </div>
+            
+            <div class="input-group">
+                <label for="target-date">Target Date & Time:</label>
+                <input type="datetime-local" id="target-date">
+            </div>
+            
+            <button id="start-countdown" class="btn-primary">Start Countdown</button>
+            <button id="reset-countdown" class="btn-secondary">Reset</button>
+        </div>
+        
+        <div class="countdown-display" id="countdown-display" style="display: none;">
+            <div class="event-title" id="event-title"></div>
+            
+            <div class="countdown-grid">
+                <div class="time-unit">
+                    <span class="time-value" id="days">00</span>
+                    <span class="time-label">Days</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="hours">00</span>
+                    <span class="time-label">Hours</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="minutes">00</span>
+                    <span class="time-label">Minutes</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label">Seconds</span>
+                </div>
+            </div>
+            
+            <div class="status-message" id="status-message"></div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
